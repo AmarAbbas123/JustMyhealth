@@ -7,39 +7,31 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    // Load dashboard
     public function index()
     {
-        $data = DB::table('leads')->get();
-        $labels = $data->pluck('source');
-        $values = $data->pluck('value');
+        // Get all leads grouped by region
+        $regions = DB::table('leads')
+            ->select('region')
+            ->distinct()
+            ->pluck('region');
 
-        return view('dashboard', compact('labels', 'values', 'data'));
-    }
+        $charts = [];
 
-    // Update lead value via AJAX
-    public function updateLead(Request $request)
-    {
-        DB::table('leads')
-            ->where('id', $request->id)
-            ->update(['value' => $request->value]);
+        foreach($regions as $region){
+            $data = DB::table('leads')
+                ->where('region', $region)
+                ->get();
 
-        return response()->json(['success' => true]);
-    }
+            $labels = $data->pluck('source');
+            $values = $data->pluck('value');
 
-    // Add new lead source via AJAX
-    public function addLead(Request $request)
-    {
-        $request->validate([
-            'source' => 'required|string|max:50',
-            'value' => 'required|integer|min:0'
-        ]);
+            $charts[] = [
+                'region' => $region,
+                'labels' => $labels,
+                'values' => $values
+            ];
+        }
 
-        $id = DB::table('leads')->insertGetId([
-            'source' => $request->source,
-            'value' => $request->value
-        ]);
-
-        return response()->json(['success' => true, 'id' => $id]);
+        return view('dashboard', compact('charts'));
     }
 }

@@ -108,7 +108,7 @@ function donutChart(selector, title, data) {
                 return val.toFixed(1) + '%';
             },
             style: {
-                fontSize: '12px',
+                fontSize: '10px',
                 fontWeight: '600',
                 colors: ['#111827']
             }

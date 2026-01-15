@@ -2,36 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Get all leads grouped by region
-        $regions = DB::table('leads')
-            ->select('region')
-            ->distinct()
-            ->pluck('region');
+        $deviceType = DB::table('sys_device_details_history')
+            ->select('DeviceType as label', DB::raw('COUNT(*) as total'))
+            ->groupBy('DeviceType')
+            ->get();
 
-        $charts = [];
+        $deviceOS = DB::table('sys_device_details_history')
+            ->select('DeviceOS as label', DB::raw('COUNT(*) as total'))
+            ->groupBy('DeviceOS')
+            ->get();
 
-        foreach($regions as $region){
-            $data = DB::table('leads')
-                ->where('region', $region)
-                ->get();
+        $browser = DB::table('sys_device_details_history')
+            ->select('DeviceBrowser as label', DB::raw('COUNT(*) as total'))
+            ->groupBy('DeviceBrowser')
+            ->get();
 
-            $labels = $data->pluck('source');
-            $values = $data->pluck('value');
+        $userAction = DB::table('sys_device_details_history')
+            ->select('UserAction as label', DB::raw('COUNT(*) as total'))
+            ->groupBy('UserAction')
+            ->get();
 
-            $charts[] = [
-                'region' => $region,
-                'labels' => $labels,
-                'values' => $values
-            ];
-        }
-
-        return view('dashboard', compact('charts'));
+        return view('dashboard', compact(
+            'deviceType','deviceOS','browser','userAction'
+        ));
     }
 }

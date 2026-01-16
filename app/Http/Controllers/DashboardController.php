@@ -28,8 +28,13 @@ class DashboardController extends Controller
             ->groupBy('UserAction')
             ->get();
 
+        $userType = DB::table('sys_device_details_history')
+            ->select('UserType as label', DB::raw('COUNT(*) as total'))
+            ->groupBy('UserType')
+            ->get();
+
         return view('dashboard', compact(
-            'deviceType','deviceOS','browser','userAction'
+            'deviceType', 'deviceOS', 'browser', 'userAction', 'userType'
         ));
     }
 }

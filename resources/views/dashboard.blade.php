@@ -57,9 +57,17 @@
 
 <body>
 
-<h1>System Analytics Overview</h1>
+<h1 style="text-align: center;">System Analytics Overview</h1>
 
 <div class="dashboard-grid">
+
+<div class="chart-card">
+        <div class="chart-title">User Type</div>
+        <div class="chart-wrapper">
+            <div id="userTypeChart"></div>
+        </div>
+    </div>
+    
     <div class="chart-card">
         <div class="chart-title">Device Type</div>
         <div class="chart-wrapper">
@@ -87,6 +95,8 @@
             <div id="actionChart"></div>
         </div>
     </div>
+
+    
 </div>
 
 <script>
@@ -165,10 +175,12 @@ function donutChart(selector, title, data) {
 }
 
 // Render charts using backend data
+donutChart('#userTypeChart', 'User Type', @json($userType));
 donutChart('#deviceTypeChart', 'Device Type', @json($deviceType));
 donutChart('#deviceOSChart', 'Device OS', @json($deviceOS));
 donutChart('#browserChart', 'Browser', @json($browser));
 donutChart('#actionChart', 'User Action', @json($userAction));
+
 </script>
 
 </body>
